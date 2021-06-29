@@ -13,15 +13,13 @@ let package = Package(
     products: [
         .library(
             name: "Resolver",
-            targets: ["Resolver"]),
-        .library(
-            name: "Resolver-Static",
-            type: .static,
-            targets: ["Resolver"]),
-        .library(
-            name: "Resolver-Dynamic",
             type: .dynamic,
-            targets: ["Resolver"]),
+            targets: ["Resolver"]
+		),
+		.library(
+			name: "Resolver-Static",
+			type: .static,
+			targets: ["Resolver"]),
     ],
     dependencies: [],
     targets: [
