@@ -10,7 +10,7 @@ In Resolver, a resolver instance contains its registration code, its resolution 
 
 Inspect Resolver's code and you'll see the following.
 
-```
+```swift
 public final class Resolver {
     public static let main: Resolver = Resolver()
     public static var root: Resolver = main
@@ -23,7 +23,7 @@ Resolver creates a *main* container that it uses as its default container for al
 
 This basically means that when you do....
 
-```
+```swift
 extension Resolver: ResolverRegistering {
     static func registerAllServices() {
         register { XYZNetworkService(session: resolve()) }
@@ -34,7 +34,7 @@ extension Resolver: ResolverRegistering {
 
 You're effectively doing...
 
-```
+```swift
 extension Resolver: ResolverRegistering {
     static func registerAllServices() {
         main.register { XYZNetworkService(session: root.resolve()) }
@@ -45,7 +45,7 @@ extension Resolver: ResolverRegistering {
 
 The static (class) register and resolve functions simply pass the buck to main and root, respectively.
 
-```
+```swift
 public static func register<Service>(_ type: Service.Type = Service.self, name: Resolver.Name? = nil,
                                      factory: @escaping ResolverFactoryArgumentsN<Service>) -> ResolverOptions<Service> {
     return main.register(type, name: name, factory: factory)
@@ -60,7 +60,7 @@ public static func resolve<Service>(_ type: Service.Type = Service.self, name: S
 
 Creating your own container is simple, and similar to creating your own scope caches.
 
-```
+```swift
 extension Resolver {
     static let mock = Resolver()
 }
@@ -68,7 +68,7 @@ extension Resolver {
 
 It could then be used as follows.
 
-```
+```swift
 extension Resolver: ResolverRegistering {
     static func registerAllServices() {
         mock.register { XYZNetworkService(session: mock.resolve()) }
@@ -91,9 +91,9 @@ This implies that if root were to point to a different container, like our *mock
 
 Now consider the following:
 
-```
+```swift
 extension Resolver {
-    static let mock = Resolver(parent: main)
+    static let mock = Resolver(child: main)
 
     static func registerAllServices() {
         register { XYZNetworkService(session: resolve()) }
@@ -107,17 +107,19 @@ extension Resolver {
 }
 ```
 
-Now, when in DEBUG mode, *root* is switched out and points to *mock*. When a service is resolved, **mock will now be searched first.**
+Now, when in DEBUG mode, *root* is switched out and points to the new parent container *mock*. When a service is resolved, **mock will now be searched first.**
 
 This means that the `XYZSessionService` service we just defined in *mock* will be used over any matching service defined in *main*.  
 
-If a service is **not** found in *mock*,  the *main* parent container will be searched automatically, thanks to our adding the parent parameter to `mock = Resolver(parent: main)`.
+If a service is **not** found in *mock*,  the *main* child container will be searched automatically, thanks to our adding the child parameter to `mock = Resolver(child: main)`.
+
+This lookup mechanism is recursive.  Should *main* not have what we're looking for, any child containers that might have been added to it would be searched, effectively resulting in a depth-first tree search.
 
 ## Party Trick?
 
 One might ask why we simply don't do the following:
 
-```
+```swift
 extension Resolver {
     static func registerAllServices() {
         register { XYZNetworkService(session: resolve()) }
@@ -138,10 +140,10 @@ But what if, for example, we want to keep both registrations and use the proper 
 
 Consider the following:
 
-```
+```swift
 extension Resolver {
     #if DEBUG
-    static let mock = Resolver(parent: main)
+    static let mock = Resolver(child: main)
     #end
     
     static func registerAllServices() {
@@ -157,7 +159,7 @@ extension Resolver {
 
 And then somewhere in our code we do this before we enter a given section:
 
-```
+```swift
 #if DEBUG
 Resolver.root = Resolver.mock
 #end
@@ -165,7 +167,7 @@ Resolver.root = Resolver.mock
 
 And then when exiting that section:
 
-```
+```swift
 #if DEBUG
 Resolver.root = Resolver.main
 #end
@@ -177,7 +179,7 @@ Returning, we switch back and the app again behaves normally.
 
 Nice party trick, don't you think?
 
-## Child Containers
+## Multiple Child Containers
 
 Resolver 1.4.3 adds support for multiple child containers. 
 
@@ -200,4 +202,4 @@ extension Resolver {
 
 Now when main is asked to resolve a given service, it will first search its own registrations and then, if not found, will search each of the included child containers to see if one of them contains the needed registration. First match will return, and containers will be searched in the order in which they're added.
 
-This is basically a small change that reworks the "parent" mechanism to support multiple children. Parent (or "nested") containers still work as before.
+This is basically a small change that reworks the search mechanism to support multiple children. Nested (or "parent/child") containers still work as before.

@@ -1,6 +1,6 @@
 # Resolver ![icon](https://user-images.githubusercontent.com/709283/32858974-cce8282a-ca12-11e7-944b-c8046156290b.png)
 
-An ultralight Dependency Injection / Service Locator framework for Swift 5.2 on iOS.
+An ultralight Dependency Injection / Service Locator framework for Swift 5.x on iOS.
 
 **Note that several recent updates to Resolver may break earlier code that used [argument passing](./Documentation/Arguments.md#multiple) and/or [named services](./Documentation/Names.md). For more see the [Updates](#updates) section below.**
 
@@ -39,6 +39,8 @@ class BasicInjectedViewController: UIViewController {
 }
 ```
 Just add the Injected keyword and your dependencies will be resolved automatically. See the [Annotation](./Documentation/Annotation.md) documentation for more on this and other strategies.
+
+There's also an `@InjectedObject` wrapper that can inject Observable Objects in SwiftUI views.
 
 ## Features
 
@@ -111,8 +113,9 @@ It's possible that recent updates to Resolver could cause breaking changes in yo
 
 * Resolver 1.3 adds Name spaces to Resolver. Registering names allows for better autocompletion and makes your code safer by reducing potential runtime evaluation errors. This is a possible breaking change.  See: [Named Instances](./Documentation/Names.md)
 
-
 * Resolver 1.2 changed how arguments are passed to the registration factory in order to provide better support for passing and handling both single and multiple arguments. This is a breaking change. See: [Passing and Handling Multiple Arguments](./Documentation/Arguments.md#multiple)
+
+* Resolver 1.5 updated several of the registration and caching mechanisms used within Resolver. This one probably isn't an issue unless you wrote something that depended upon Resolver's internal behavior.
 
 ## Author
 
@@ -121,17 +124,21 @@ Resolver was designed, implemented, documented, and maintained by [Michael Long]
 * Email: [mlong@clientresourcesinc.com](mailto:mlong@clientresourcesinc.com)
 * Twitter: @hmlco
 
+He was also one of Google's [Open Source Peer Reward](https://opensource.googleblog.com/2021/09/announcing-latest-open-source-peer-bonus-winners.html) winners in 2021 for his work on Resolver.
+
 ## License
 
 Resolver is available under the MIT license. See the LICENSE file for more info.
 
 ## Additional Resouces
 
+* [Resolver for iOS Dependency Injection: Getting Started | Ray Wenderlich](https://www.raywenderlich.com/22203552-resolver-for-ios-dependency-injection-getting-started)
 * [API Documentation](./Documentation/API/Classes/Resolver.html)
 * [Inversion of Control Design Pattern ~ Wikipedia](https://en.wikipedia.org/wiki/Inversion_of_control)
 * [Inversion of Control Containers and the Dependency Injection pattern ~ Martin Fowler](https://martinfowler.com/articles/injection.html)
-* [Nuts and Bolts of Dependency Injection in Swift](https://cocoacasts.com/nuts-and-bolts-of-dependency-injection-in-swift/)\
+* [Nuts and Bolts of Dependency Injection in Swift](https://cocoacasts.com/nuts-and-bolts-of-dependency-injection-in-swift/)
 * [Dependency Injection in Swift](https://cocoacasts.com/dependency-injection-in-swift)
 * [SwinjectStoryboard](https://github.com/Swinject/SwinjectStoryboard)
 * [Swift 5.1 Takes Dependency Injection to the Next Level](https://medium.com/better-programming/taking-swift-dependency-injection-to-the-next-level-b71114c6a9c6)
 * [Builder Demo Application](https://github.com/hmlongco/Builder)
+

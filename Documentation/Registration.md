@@ -2,7 +2,7 @@
 
 ## Introduction
 
-As mention in the introduction , in order for Resolve to *resolve* a request for a paticular service you first need to register a factory that knows how to instantiate an instance of the service.
+As mentioned in the introduction, in order for Resolve to *resolve* a request for a paticular service you first need to register a factory that knows how to instantiate an instance of the service.
 
 ```swift
 Resolver.register { NetworkService() }
@@ -27,8 +27,8 @@ Let's start by adding the master injection file for the entire application.
 
 Add a file named `AppDelegate+Injection.swift` to your project and add the following code:
 
-```
-#import Resolver
+```swift
+import Resolver
 
 extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
@@ -53,7 +53,7 @@ Let's say you have a group in your project folder named "NetworkServices", and y
 
 Go to the NetworkServices folder and add a swift file named: `NetworkServices+Injection.swift`, then add the following to that file...
 
-```
+```swift
 #import Resolver
 
 extension Resolver {
@@ -67,7 +67,7 @@ extension Resolver {
 
 Now, go back to your  `AppDelegate+Injection.swift` file and add a reference to `registerMyNetworkServices`.
 
-```
+```swift
 extension Resolver: ResolverRegistering {
     public static func registerAllServices() {
         registerMyNetworkServices()
@@ -83,7 +83,7 @@ Now, housekeeping completed, return to  `NetworkServices+Injection.swift` and ad
 
 Just as an example:
 
-```
+```swift
 import Resolver
 
 extension Resolver {
